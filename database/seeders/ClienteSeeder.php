@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use App\Models\Cliente;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
@@ -15,6 +16,8 @@ class ClienteSeeder extends Seeder
     public function run(): void
     {
         // Opción 1: Insertar varios clientes con datos reales (recomendada)
+
+        /*
         DB::table('clientes')->insert([
             [
                 'nombre'     => 'Juan',
@@ -58,6 +61,9 @@ class ClienteSeeder extends Seeder
             ],
         ]);
 
+        */
+
         // Opción 2: Usar Factory (más profesional y escalable) - Te la muestro abajo
+        Cliente::factory(20)->create();
     }
 }
