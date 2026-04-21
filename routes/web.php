@@ -18,6 +18,7 @@ Route::get('/mensajes', [MensajeController::class, 'index'])
      ->middleware(['auth', 'verified'])
      ->name('mensajes');
 
+Route::post('/nuevo-mensaje', [MensajeController::class, 'store'])->name('store.mensaje');
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');

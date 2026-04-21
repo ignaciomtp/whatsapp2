@@ -26,7 +26,11 @@
                                 <td class="p-4">{{ $mensaje->id }}</td>
                                 <td class="p-4">{{ $mensaje->fecha }}</td>
                                 <td class="p-4">{{ $mensaje->texto }}</td>
-                                <td class="p-4"></td>
+                                <td class="p-4">
+                                    @foreach($mensaje->clientes as $cliente)
+                                        {{ $cliente->nombre . " " . $cliente->apellidos .", " }}
+                                    @endforeach
+                                </td>
                                 <td class="p-4">
                                     <button
                                         type="button"

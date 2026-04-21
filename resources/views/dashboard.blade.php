@@ -5,7 +5,43 @@
         </h2>
     </x-slot>
 
-    <div class="py-12" x-data="{ open: false, clienteNombre: '', clienteApellidos: '', clienteId: '', clienteTel: '' }">
+    <div class="py-12" x-data="{
+            open: false,
+            clienteNombre: '',
+            clienteApellidos: '',
+            clienteId: '',
+            clienteTel: '',
+            texto: '',
+            enviando: false,
+            enviado: false,
+            async enviar() {
+                this.enviando = true;
+
+                await fetch('{{ route('store.mensaje') }}', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                    },
+                    body: JSON.stringify({
+                        cliente_id: this.clienteId,
+                        texto: this.texto,
+                    })
+                });
+
+                this.enviando = false;
+                this.enviado = true;
+
+                setTimeout(() => {
+                    this.enviado = false;
+                    this.open = false;
+                    this.texto = '';
+                }, 1500);
+
+                this.open = false;
+                this.texto = '';
+            }
+        }">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6 text-gray-900">
@@ -73,6 +109,8 @@
 
                 <!-- Contenido -->
                 <textarea
+                    x-model="texto"
+                    name="texto"
                     class="w-full border border-gray-300 rounded p-2 text-sm"
                     rows="4"
                     :placeholder="'Escribe un mensaje para ' + clienteNombre + '...'"
@@ -80,10 +118,10 @@
 
                 <div class="mt-4 flex justify-start gap-2">
                     <input type="text" name="telefono" class="w-full border border-gray-300 rounded p-2 text-sm"
-                    :value="clienteTel" readonly>
+                    :value="clienteTel" x-model="clienteTel" readonly>
 
                     <input type="text" name="id" class="w-full border border-gray-300 rounded p-2 text-sm"
-                    :value="clienteId" readonly>
+                    :value="clienteId" x-model="clienteId" readonly>
                 </div>
 
                 <!-- Pie -->
@@ -91,9 +129,12 @@
                     <button @click="open = false" class="px-4 py-2 border rounded hover:bg-gray-50">
                         Cancelar
                     </button>
-                    <button class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">
+                    <button @click="enviar()" :disabled="enviando" class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">
                         Enviar
                     </button>
+                    <span x-show="!enviando && !enviado">Enviar</span>
+                    <span x-show="enviando">Enviando...</span>
+                    <span x-show="enviado">¡Enviado! ✓</span>
                 </div>
             </div>
         </div>

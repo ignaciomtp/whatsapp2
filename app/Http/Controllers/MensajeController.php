@@ -30,7 +30,18 @@ class MensajeController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $validated = $request->validate([
+            'cliente_id' => 'required|exists:clientes,id',
+            'texto'      => 'required|string',
+        ]);
+
+        Mensaje::create([
+            'texto' => $validated['texto'],
+            'fecha' => now(),
+        ])->clientes()->attach($validated['cliente_id']);
+
+        return response()->json(['ok' => true]);
+
     }
 
     /**
