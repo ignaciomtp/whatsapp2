@@ -5,7 +5,7 @@
         </h2>
     </x-slot>
 
-    <div class="py-12" x-data="{ open: false, clienteNombre: '' }">
+    <div class="py-12" x-data="{ open: false, clienteNombre: '', clienteApellidos: '', clienteId: '', clienteTel: '' }">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6 text-gray-900">
@@ -35,7 +35,11 @@
                                     <button
                                         type="button"
                                         class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 border border-blue-700 rounded"
-                                        @click="clienteNombre = '{{ $cliente->nombre }}'; open = true"
+                                        @click="clienteNombre = '{{ $cliente->nombre }}';
+                                        clienteApellidos = '{{ $cliente->apellidos }}'; 
+                                        clienteId = '{{ $cliente->id }}';
+                                        clienteTel = '{{ $cliente->telefono }}';
+                                        open = true"
                                     >
                                         Mensaje
                                     </button>
@@ -63,7 +67,7 @@
             <div class="bg-white rounded-lg shadow-xl w-full max-w-md p-6">
                 <!-- Cabecera -->
                 <div class="flex justify-between items-center mb-4">
-                    <h2 class="text-xl font-semibold" x-text="'Mensaje para ' + clienteNombre"></h2>
+                    <h2 class="text-xl font-semibold" x-text="'Mensaje para ' + clienteNombre + ' ' + clienteApellidos"></h2>
                     <button @click="open = false" class="text-gray-400 hover:text-gray-600 text-xl leading-none">✕</button>
                 </div>
 
@@ -73,6 +77,14 @@
                     rows="4"
                     :placeholder="'Escribe un mensaje para ' + clienteNombre + '...'"
                 ></textarea>
+
+                <div class="mt-4 flex justify-start gap-2">
+                    <input type="text" name="telefono" class="w-full border border-gray-300 rounded p-2 text-sm"
+                    :value="clienteTel" readonly>
+
+                    <input type="text" name="id" class="w-full border border-gray-300 rounded p-2 text-sm"
+                    :value="clienteId" readonly>
+                </div>
 
                 <!-- Pie -->
                 <div class="mt-4 flex justify-end gap-2">
