@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ClienteController;
+use App\Http\Controllers\MensajeController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -11,6 +12,11 @@ Route::get('/', function () {
 Route::get('/dashboard', [ClienteController::class, 'index'])
      ->middleware(['auth', 'verified'])
      ->name('dashboard');
+
+
+Route::get('/mensajes', [MensajeController::class, 'index'])
+     ->middleware(['auth', 'verified'])
+     ->name('mensajes');
 
 
 Route::middleware('auth')->group(function () {

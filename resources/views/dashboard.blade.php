@@ -15,6 +15,7 @@
                     <table class="w-full text-left rtl:text-right border-collapse table-auto">
                         <thead class="bg-neutral-secondary-soft border-b border-default">
                             <tr class="p-4">
+                                <th class="p-4">Id</th>
                                 <th class="p-4">Nombre</th>
                                 <th class="p-4">Apellidos</th>
                                 <th class="p-4">Email</th>
@@ -25,6 +26,7 @@
                         <tbody>
                             @foreach($clientes as $cliente)
                             <tr class="odd:bg-neutral-primary p-4 even:bg-neutral-secondary-soft border-b border-default">
+                                <td class="p-4">{{ $cliente->id }}</td>
                                 <td class="p-4">{{ $cliente->nombre }}</td>
                                 <td class="p-4">{{ $cliente->apellidos }}</td>
                                 <td class="p-4">{{ $cliente->email }}</td>

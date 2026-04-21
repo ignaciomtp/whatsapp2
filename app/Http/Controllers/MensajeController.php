@@ -13,7 +13,8 @@ class MensajeController extends Controller
      */
     public function index()
     {
-        //
+        $mensajes = Mensaje::paginate(5);
+        return view('mensajes', compact('mensajes'));
     }
 
     /**
