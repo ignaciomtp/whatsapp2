@@ -9,6 +9,9 @@
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6 text-gray-900">
+                    <div class="mb-4 text-sm text-gray-500">
+                        Mostrando {{ $clientes->firstItem() }}–{{ $clientes->lastItem() }} de {{ $clientes->total() }} clientes
+                    </div>
                     <table class="w-full text-left rtl:text-right border-collapse table-auto">
                         <thead class="bg-neutral-secondary-soft border-b border-default">
                             <tr class="p-4">
@@ -39,6 +42,11 @@
                             @endforeach
                         </tbody>
                     </table>
+
+                    {{-- Paginación --}}
+                    <div class="mt-4">
+                        {{ $clientes->links() }}
+                    </div>
                 </div>
             </div>
         </div>
