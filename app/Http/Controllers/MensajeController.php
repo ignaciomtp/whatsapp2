@@ -3,8 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Models\Mensaje;
+use App\Models\Cliente;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use App\Services\WhatsAppService;
 
 class MensajeController extends Controller
 {
@@ -35,13 +37,21 @@ class MensajeController extends Controller
             'texto'      => 'required|string',
         ]);
 
-        Mensaje::create([
-            'texto' => $validated['texto'],
-            'fecha' => now(),
-        ])->clientes()->attach($validated['cliente_id']);
+        $cliente = Cliente::findOrFail($validated['cliente_id']);
 
-        return response()->json(['ok' => true]);
+        try {
+            $this->notificar($cliente->telefono, $validated['texto']);
 
+            Mensaje::create([
+                'texto' => $validated['texto'],
+                'fecha' => now(),
+            ])->clientes()->attach($validated['cliente_id']);
+
+            return response()->json(['ok' => true]);
+
+        } catch (\Exception $e) {
+            return response()->json(['ok' => false, 'error' => $e->getMessage()], 400);
+        }
     }
 
     /**
@@ -74,5 +84,16 @@ class MensajeController extends Controller
     public function destroy(Mensaje $mensaje)
     {
         //
+    }
+
+
+    public function notificar(string $telefono, string $texto): void
+    {
+        $whatsapp = new WhatsAppService();
+        $resultado = $whatsapp->sendTextMessage($telefono, $texto);
+
+        if (isset($resultado['error'])) {
+            throw new \Exception($resultado['error']['message']);
+        }
     }
 }

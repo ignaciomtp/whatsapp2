@@ -14,6 +14,7 @@
             texto: '',
             enviando: false,
             enviado: false,
+            selected: [],
             async enviar() {
                 this.enviando = true;
 
@@ -40,6 +41,20 @@
 
                 this.open = false;
                 this.texto = '';
+            },
+            checkClient(id) {
+                
+                const isIn = (element) => element == id;
+
+                let idx = this.selected.findIndex(isIn);
+
+                if(idx == -1) {
+                    this.selected.push(id);
+                } else {
+                    this.selected.splice(idx, 1);
+                }
+
+                console.log(this.selected);
             }
         }">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
@@ -48,9 +63,13 @@
                     <div class="mb-4 text-sm text-gray-500">
                         Mostrando {{ $clientes->firstItem() }}–{{ $clientes->lastItem() }} de {{ $clientes->total() }} clientes
                     </div>
+                    <div>
+                        <button></button>
+                    </div>
                     <table class="w-full text-left rtl:text-right border-collapse table-auto">
                         <thead class="bg-neutral-secondary-soft border-b border-default">
                             <tr class="p-4">
+                                <th></th>
                                 <th class="p-4">Id</th>
                                 <th class="p-4">Nombre</th>
                                 <th class="p-4">Apellidos</th>
@@ -62,6 +81,11 @@
                         <tbody>
                             @foreach($clientes as $cliente)
                             <tr class="odd:bg-neutral-primary p-4 even:bg-neutral-secondary-soft border-b border-default">
+                                <td>
+                                    <input type="checkbox" 
+                                    @click="checkClient({{ $cliente->id }})"
+                                    class="border border-gray-300 rounded">
+                                </td>
                                 <td class="p-4">{{ $cliente->id }}</td>
                                 <td class="p-4">{{ $cliente->nombre }}</td>
                                 <td class="p-4">{{ $cliente->apellidos }}</td>
@@ -132,9 +156,11 @@
                     <button @click="enviar()" :disabled="enviando" class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">
                         Enviar
                     </button>
-                    <span x-show="!enviando && !enviado">Enviar</span>
-                    <span x-show="enviando">Enviando...</span>
-                    <span x-show="enviado">¡Enviado! ✓</span>
+                    <div>
+                        <span x-show="enviando">Enviando...</span>
+                        <span x-show="enviado">¡Enviado! ✓</span>
+                    </div>
+                    
                 </div>
             </div>
         </div>
