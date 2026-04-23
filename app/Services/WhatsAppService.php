@@ -17,6 +17,7 @@ class WhatsAppService
         $this->phoneNumberId = config('services.meta.phone_number_id');
         $this->apiVersion = config('services.meta.api_version', 'v21.0');
         $this->baseUrl = "https://graph.facebook.com/{$this->apiVersion}/{$this->phoneNumberId}/messages";
+
     }
 
     public function sendTextMessage(string $to, string $message): array
@@ -28,6 +29,7 @@ class WhatsAppService
                 'type' => 'text',
                 'text' => ['body' => $message],
             ]);
+
 
         return $response->json();
     }

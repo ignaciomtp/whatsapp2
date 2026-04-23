@@ -90,7 +90,7 @@
                                 <td class="p-4">{{ $cliente->nombre }}</td>
                                 <td class="p-4">{{ $cliente->apellidos }}</td>
                                 <td class="p-4">{{ $cliente->email }}</td>
-                                <td class="p-4">{{ $cliente->telefono }}</td>
+                                <td class="p-4">{{ "+".$cliente->codigo_pais." ".$cliente->telefono }}</td>
                                 <td class="p-4">
                                     <button
                                         type="button"

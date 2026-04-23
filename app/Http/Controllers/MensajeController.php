@@ -92,6 +92,8 @@ class MensajeController extends Controller
         $whatsapp = new WhatsAppService();
         $resultado = $whatsapp->sendTextMessage($telefono, $texto);
 
+        //$resultado = $whatsapp->sendTemplate($telefono, 'hello_world', 'en_US');
+
         if (isset($resultado['error'])) {
             throw new \Exception($resultado['error']['message']);
         }
