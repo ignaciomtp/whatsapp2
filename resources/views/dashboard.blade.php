@@ -14,7 +14,9 @@
             texto: '',
             enviando: false,
             enviado: false,
+            allSelected: false,
             selected: [],
+            clientesIds: {{ $clientes->pluck('id') }},
             async enviar() {
                 this.enviando = true;
 
@@ -55,21 +57,46 @@
                 }
 
                 console.log(this.selected);
+            },
+            allCheckedToggle() {
+                if (!this.allSelected) {
+                    this.selected = [...this.clientesIds];
+                } else {
+                    this.selected = [];
+                }
+
+                this.allSelected = !this.allSelected;
+
+                console.log(this.selected);
+            },
+            sendToAll() {
+                console.log('send messages to all');
             }
         }">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
-                <div class="p-6 text-gray-900">
+                <div class="p-6 text-gray-900">                    
+                    <div class="float-right">
+                        <button
+                            type="button"
+                            :disabled="selected.length < 2"  
+                            @click="sendToAll"
+                            class="bg-blue-500 hover:bg-blue-700 disabled:bg-blue-100 text-white font-bold py-2 px-4 border border-blue-700 disabled:border-blue-50 rounded">                                                              
+                            Mensaje Múltiple
+                        </button>
+                    </div>
                     <div class="mb-4 text-sm text-gray-500">
                         Mostrando {{ $clientes->firstItem() }}–{{ $clientes->lastItem() }} de {{ $clientes->total() }} clientes
-                    </div>
-                    <div>
-                        <button></button>
                     </div>
                     <table class="w-full text-left rtl:text-right border-collapse table-auto">
                         <thead class="bg-neutral-secondary-soft border-b border-default">
                             <tr class="p-4">
-                                <th></th>
+                                <th>
+                                    <input type="checkbox" 
+                                    @click="allCheckedToggle()"
+                                    :checked="allSelected"
+                                    class="border border-gray-300 rounded">
+                                </th>
                                 <th class="p-4">Id</th>
                                 <th class="p-4">Nombre</th>
                                 <th class="p-4">Apellidos</th>
@@ -84,6 +111,7 @@
                                 <td>
                                     <input type="checkbox" 
                                     @click="checkClient({{ $cliente->id }})"
+                                    :checked="selected.includes({{ $cliente->id }})"
                                     class="border border-gray-300 rounded">
                                 </td>
                                 <td class="p-4">{{ $cliente->id }}</td>

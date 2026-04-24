@@ -40,7 +40,7 @@ class MensajeController extends Controller
         $cliente = Cliente::findOrFail($validated['cliente_id']);
 
         try {
-            $this->notificar($cliente->telefono, $validated['texto']);
+            $this->notificar($cliente->codigo_pais.$cliente->telefono, $validated['texto']);
 
             Mensaje::create([
                 'texto' => $validated['texto'],
@@ -90,9 +90,9 @@ class MensajeController extends Controller
     public function notificar(string $telefono, string $texto): void
     {
         $whatsapp = new WhatsAppService();
-        $resultado = $whatsapp->sendTextMessage($telefono, $texto);
+        //$resultado = $whatsapp->sendTextMessage($telefono, $texto);
 
-        //$resultado = $whatsapp->sendTemplate($telefono, 'hello_world', 'en_US');
+        $resultado = $whatsapp->sendTemplate($telefono, 'hello_world', 'en_US');
 
         if (isset($resultado['error'])) {
             throw new \Exception($resultado['error']['message']);
