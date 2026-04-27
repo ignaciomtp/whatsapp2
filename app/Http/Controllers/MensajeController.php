@@ -35,13 +35,13 @@ class MensajeController extends Controller
     {
         $validated = $request->validate([
             'cliente_id' => 'required|exists:clientes,id',
-            'texto'      => 'required|string',
+            'texto'      => 'nullable|string',
             
         ]);
 
         $cliente = Cliente::findOrFail($validated['cliente_id']);
-        //$telefono = $cliente->codigo_pais.$cliente->telefono;
-        $telefono = "34634610794";
+        $telefono = $cliente->codigo_pais.$cliente->telefono;
+        
 
         $path = null;
         if ($request->hasFile('archivo')) {
@@ -119,7 +119,7 @@ class MensajeController extends Controller
     {
         $whatsapp = new WhatsAppService();
         $mimeType = mime_content_type($media);
-        
+
         $resultado = $whatsapp->uploadMedia($media, $mimeType);
 
         if (isset($resultado['error'])) {

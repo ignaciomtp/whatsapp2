@@ -167,7 +167,7 @@
 
                 <!-- Contenido -->
                 <div class="mb-2">
-                    <label class="text-sm text-gray-600">Imagen (opcional)</label>
+                    <label class="text-sm text-gray-600">Archivo (opcional)</label>
                     <input 
                         type="file" 
                         name="archivo"
