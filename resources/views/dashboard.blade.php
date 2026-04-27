@@ -12,6 +12,7 @@
             clienteId: '',
             clienteTel: '',
             texto: '',
+            imagenFile: null,
             enviando: false,
             enviado: false,
             allSelected: false,
@@ -19,17 +20,22 @@
             clientesIds: {{ $clientes->pluck('id') }},
             async enviar() {
                 this.enviando = true;
+            
+                let formData = new FormData();
+                formData.append('cliente_id', this.clienteId);
+                formData.append('texto', this.texto);
+                
+                // Si hay una imagen seleccionada, la añadimos
+                if (this.imagenFile) {
+                    formData.append('imagen', this.imagenFile);
+                }
 
                 await fetch('{{ route('store.mensaje') }}', {
                     method: 'POST',
                     headers: {
-                        'Content-Type': 'application/json',
                         'X-CSRF-TOKEN': '{{ csrf_token() }}'
                     },
-                    body: JSON.stringify({
-                        cliente_id: this.clienteId,
-                        texto: this.texto,
-                    })
+                    body: formData
                 });
 
                 this.enviando = false;
@@ -160,6 +166,15 @@
                 </div>
 
                 <!-- Contenido -->
+                <div class="mb-2">
+                    <label class="text-sm text-gray-600">Imagen (opcional)</label>
+                    <input 
+                        type="file" 
+                        name="imagen"
+                        accept="image/*" 
+                        @change="imagenFile = $event.target.files[0]"
+                    >
+                </div>
                 <textarea
                     x-model="texto"
                     name="texto"

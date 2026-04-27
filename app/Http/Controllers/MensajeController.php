@@ -7,6 +7,7 @@ use App\Models\Cliente;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Services\WhatsAppService;
+use Illuminate\Support\Facades\Storage;
 
 class MensajeController extends Controller
 {
@@ -35,12 +36,27 @@ class MensajeController extends Controller
         $validated = $request->validate([
             'cliente_id' => 'required|exists:clientes,id',
             'texto'      => 'required|string',
+            'imagen' => 'nullable|image|mimes:jpg,jpeg,png|max:2048', // Max 2MB
         ]);
 
         $cliente = Cliente::findOrFail($validated['cliente_id']);
+        //$telefono = $cliente->codigo_pais.$cliente->telefono;
+        $telefono = "34634610794";
+
+        $path = null;
+        if ($request->hasFile('imagen')) {
+            // Guarda la imagen en la carpeta 'imagenes' dentro de storage/app/public
+            $path = $request->file('imagen')->store('imagenes', 'public');
+
+            try {
+                $this->enviarMultimedia($telefono, Storage::disk('public')->path($path));
+            } catch (\Exception $e) {
+                return response()->json(['ok' => false, 'error' => $e->getMessage()], 400);
+            }
+        }
 
         try {
-            $this->notificar($cliente->codigo_pais.$cliente->telefono, $validated['texto']);
+            $this->notificar($telefono, $validated['texto']);
 
             Mensaje::create([
                 'texto' => $validated['texto'],
@@ -90,12 +106,29 @@ class MensajeController extends Controller
     public function notificar(string $telefono, string $texto): void
     {
         $whatsapp = new WhatsAppService();
-        //$resultado = $whatsapp->sendTextMessage($telefono, $texto);
+        $resultado = $whatsapp->sendTextMessage($telefono, $texto);
 
-        $resultado = $whatsapp->sendTemplate($telefono, 'hello_world', 'en_US');
+        //$resultado = $whatsapp->sendTemplate($telefono, 'hello_world', 'en_US');
 
         if (isset($resultado['error'])) {
             throw new \Exception($resultado['error']['message']);
         }
+    }
+
+    public function enviarMultimedia(string $telefono, string $media): void 
+    {
+        $whatsapp = new WhatsAppService();
+        $resultado = $whatsapp->uploadMedia($media, 'image/jpeg');
+
+        if (isset($resultado['error'])) {
+            throw new \Exception($resultado['error']['message']);
+        }
+
+        $resultado2 = $whatsapp->sendUploadedMedia($telefono, $resultado['id']);
+
+        if (isset($resultado2['error'])) {
+            throw new \Exception($resultado2['error']['message']);
+        }
+
     }
 }
