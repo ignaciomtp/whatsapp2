@@ -122,13 +122,20 @@ class WhatsAppService
     }
 
 
-    public function sendUploadedMedia(string $to, string $idMedia): array
+    public function sendUploadedMedia(string $to, string $idMedia, string $mimeType): array
     {
+        $mediaType = explode('/', $mimeType)[0]; // 'image', 'audio', 'video'
+
+        // Para cualquier cosa que no sea imagen/audio/video, WhatsApp usa 'document'
+        if (!in_array($mediaType, ['image', 'audio', 'video'])) {
+            $mediaType = 'document';
+        }
+
         $response = Http::withToken($this->token)->post($this->baseUrl, [
             'messaging_product' => 'whatsapp',
             'to'                => $to,
-            'type'              => 'image',
-            'image'             => ['id' => $idMedia],
+            'type'              => $mediaType,
+            $mediaType          => ['id' => $idMedia],
         ]);
 
         return $response->json();

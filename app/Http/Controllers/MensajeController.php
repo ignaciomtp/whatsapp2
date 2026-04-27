@@ -36,7 +36,7 @@ class MensajeController extends Controller
         $validated = $request->validate([
             'cliente_id' => 'required|exists:clientes,id',
             'texto'      => 'required|string',
-            'imagen' => 'nullable|image|mimes:jpg,jpeg,png|max:2048', // Max 2MB
+            
         ]);
 
         $cliente = Cliente::findOrFail($validated['cliente_id']);
@@ -44,9 +44,9 @@ class MensajeController extends Controller
         $telefono = "34634610794";
 
         $path = null;
-        if ($request->hasFile('imagen')) {
-            // Guarda la imagen en la carpeta 'imagenes' dentro de storage/app/public
-            $path = $request->file('imagen')->store('imagenes', 'public');
+        if ($request->hasFile('archivo')) {
+            // Guarda la imagen en la carpeta 'archivo' dentro de storage/app/public
+            $path = $request->file('archivo')->store('archivo', 'public');
 
             try {
                 $this->enviarMultimedia($telefono, Storage::disk('public')->path($path));
@@ -118,13 +118,15 @@ class MensajeController extends Controller
     public function enviarMultimedia(string $telefono, string $media): void 
     {
         $whatsapp = new WhatsAppService();
-        $resultado = $whatsapp->uploadMedia($media, 'image/jpeg');
+        $mimeType = mime_content_type($media);
+        
+        $resultado = $whatsapp->uploadMedia($media, $mimeType);
 
         if (isset($resultado['error'])) {
             throw new \Exception($resultado['error']['message']);
         }
 
-        $resultado2 = $whatsapp->sendUploadedMedia($telefono, $resultado['id']);
+        $resultado2 = $whatsapp->sendUploadedMedia($telefono, $resultado['id'], $mimeType);
 
         if (isset($resultado2['error'])) {
             throw new \Exception($resultado2['error']['message']);

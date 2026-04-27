@@ -27,7 +27,7 @@
                 
                 // Si hay una imagen seleccionada, la añadimos
                 if (this.imagenFile) {
-                    formData.append('imagen', this.imagenFile);
+                    formData.append('archivo', this.imagenFile);
                 }
 
                 await fetch('{{ route('store.mensaje') }}', {
@@ -170,8 +170,8 @@
                     <label class="text-sm text-gray-600">Imagen (opcional)</label>
                     <input 
                         type="file" 
-                        name="imagen"
-                        accept="image/*" 
+                        name="archivo"
+                        accept="*/*" 
                         @change="imagenFile = $event.target.files[0]"
                     >
                 </div>
