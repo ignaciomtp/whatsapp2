@@ -55,19 +55,22 @@ class MensajeController extends Controller
             }
         }
 
-        try {
-            $this->notificar($telefono, $validated['texto']);
+        if (!empty($validated['texto'])) {
+            try {
+                $this->notificar($telefono, $validated['texto']);
 
-            Mensaje::create([
-                'texto' => $validated['texto'],
-                'fecha' => now(),
-            ])->clientes()->attach($validated['cliente_id']);
+                Mensaje::create([
+                    'texto' => $validated['texto'],
+                    'fecha' => now(),
+                ])->clientes()->attach($validated['cliente_id']);
 
-            return response()->json(['ok' => true]);
+                return response()->json(['ok' => true]);
 
-        } catch (\Exception $e) {
-            return response()->json(['ok' => false, 'error' => $e->getMessage()], 400);
+            } catch (\Exception $e) {
+                return response()->json(['ok' => false, 'error' => $e->getMessage()], 400);
+            }
         }
+
     }
 
     /**

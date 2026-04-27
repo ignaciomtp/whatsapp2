@@ -15,6 +15,7 @@
             imagenFile: null,
             enviando: false,
             enviado: false,
+            mostrarInput: true,
             allSelected: false,
             selected: [],
             clientesIds: {{ $clientes->pluck('id') }},
@@ -40,6 +41,8 @@
 
                 this.enviando = false;
                 this.enviado = true;
+                this.imagenFile = null;
+                this.resetArchivo();
 
                 setTimeout(() => {
                     this.enviado = false;
@@ -49,6 +52,11 @@
 
                 this.open = false;
                 this.texto = '';
+            },
+            resetArchivo() {
+                this.imagenFile = null;
+                this.mostrarInput = false;
+                this.$nextTick(() => this.mostrarInput = true);
             },
             checkClient(id) {
                 
@@ -78,7 +86,8 @@
             sendToAll() {
                 console.log('send messages to all');
             }
-        }">
+        }"
+        @click.self="open = false; imagenFile = null; resetArchivo()">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6 text-gray-900">                    
@@ -168,12 +177,14 @@
                 <!-- Contenido -->
                 <div class="mb-2">
                     <label class="text-sm text-gray-600">Archivo (opcional)</label>
-                    <input 
-                        type="file" 
-                        name="archivo"
-                        accept="*/*" 
-                        @change="imagenFile = $event.target.files[0]"
-                    >
+                    <template x-if="mostrarInput">
+                        <input 
+                            type="file" 
+                            name="archivo"
+                            accept="*/*"
+                            @change="imagenFile = $event.target.files[0]"
+                        >
+                    </template>
                 </div>
                 <textarea
                     x-model="texto"
@@ -193,7 +204,7 @@
 
                 <!-- Pie -->
                 <div class="mt-4 flex justify-end gap-2">
-                    <button @click="open = false" class="px-4 py-2 border rounded hover:bg-gray-50">
+                    <button @click="open = false; imagenFile = null; resetArchivo()" class="px-4 py-2 border rounded hover:bg-gray-50">
                         Cancelar
                     </button>
                     <button @click="enviar()" :disabled="enviando" class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">
